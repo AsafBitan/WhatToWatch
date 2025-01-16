@@ -84,11 +84,35 @@ export const fetchMovies = async (): Promise<Movie[]> => {
 export const fetchTV = async (): Promise<TVShow[]> => {
   const url = `https://api.themoviedb.org/3/discover/tv?include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc&api_key=${apiKey}`
   try {
-    const response = await axios.get(url, baseOptions);
+    const response = await axios.get(url);
     const shows = response.data.results || [];
     return shows.map(transformTvShoweData)
   } catch (error) {
       console.error('Error fetching tv shows', error);
       throw error;
+  }
+}
+
+export const fetchMovieByID = async (id: string): Promise<Movie> => {
+  const url = `https://api.themoviedb.org/3/find/${id}?external_source=imdb_id&api_key=${apiKey}`;
+  try{
+    const response = await axios.get(url);
+    const movie = response.data.movie_results || null;
+    return transformMovieData(movie);
+  }catch(error){
+    console.error('Error fetching by id ', error)
+    throw error;
+  }
+}
+
+export const fetchTVShowByID = async (id: string): Promise<Movie> => {
+  const url = `https://api.themoviedb.org/3/find/${id}?external_source=imdb_id&api_key=${apiKey}`;
+  try{
+    const response = await axios.get(url);
+    const show = response.data.movie_results || null;
+    return transformTvShoweData(show);
+  }catch(error){
+    console.error('Error fetching by id ', error)
+    throw error;
   }
 }

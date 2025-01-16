@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from "react";
-import { Text, View, ActivityIndicator, FlatList, TouchableOpacity } from "react-native";
-import { Link } from "expo-router";
+import { Text, View, ActivityIndicator, FlatList, TouchableOpacity, ScrollView } from "react-native";
+import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Search from "@/components/seatch";
 import { MovieCards, TVShowCards } from "@/components/Cards";
@@ -10,8 +10,13 @@ import { Movie, TVShow, fetchMovies, fetchTV } from "../../ApiService";
 
 const Home = () => {
   const [movies, setMovies] = useState<Movie[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loadingMovie, setLoadingMovie] = useState(true)
+ 
   const [tvshows, setTvshows] = useState<TVShow[]>([])
+  const [loadingShow, setLoadingShow] = useState(true)
+
+  const handleMoviePress = (id: string) => router.push(`/movie/${id}`);
+  const handleTVSowPress = (id: string) => router.push(`/tvshow/${id}`);
  
   useEffect(() => {
     const getMovies = async () => {
@@ -21,7 +26,7 @@ const Home = () => {
       }catch(error){
         console.error('Error fetching movies: ', error)
       }finally{
-        setLoading(false);
+        setLoadingMovie(false);
       }
     } 
     const getTvShows = async () => {
@@ -31,7 +36,7 @@ const Home = () => {
       }catch(error){
         console.error('Error fetching movies: ', error)
       }finally{
-        setLoading(false);
+        setLoadingShow(false);
       }
     } 
     getMovies();
@@ -41,7 +46,8 @@ const Home = () => {
 
   return (
     <SafeAreaView className="h-full bg-white">
-      <View className="px-5">
+      <ScrollView contentContainerStyle={{ paddingBottom: 60}}>
+        <View className="px-5">
         <View className="flex flex-row items-center justify-between mt-5">
            
         </View>
@@ -65,13 +71,13 @@ const Home = () => {
         </View>
         
         {
-        loading ? (
+        loadingMovie ? (
           <ActivityIndicator size='large' color='#000' />
         ) : (
           <FlatList 
           data={movies} 
           keyExtractor={(item) => item.id} 
-          renderItem={({item}) => <MovieCards movies={[item]}/>} 
+          renderItem={({item}) => <MovieCards item={item} onPress={() =>handleMoviePress(item.id)}/>} 
           horizontal
           contentContainerClassName="flex mt-3"
           />
@@ -91,20 +97,20 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         {
-          loading ? (
+          loadingShow ? (
             <ActivityIndicator size='large' color='#000'/>
             ) : (
               <FlatList 
               data={tvshows}
               keyExtractor={(item) => item.id}
-              renderItem={({item}) => <TVShowCards tvshows={[item]}/>}
+              renderItem={({item}) => <TVShowCards item={item} onPress={() => handleTVSowPress(item.id)}/>}
               horizontal
               contentContainerClassName="flex mt-3"
               />
             )
         } 
       </View>
-      
+      </ScrollView>
     </SafeAreaView>
   );
 };

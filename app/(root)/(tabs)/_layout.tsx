@@ -24,8 +24,9 @@ const TabsLayout = () => {
                 borderTopColor: '#0061FF1A',
                 borderTopWidth: 1,
                 maxHeight: 70,
-            }
-
+                elevation: 5,
+            },
+            tabBarHideOnKeyboard: true,
         }}
     >
         <Tabs.Screen
