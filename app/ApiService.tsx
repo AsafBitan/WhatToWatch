@@ -7,6 +7,9 @@ if (!apiKey) {
   console.error("API Key is not defined");
   throw new Error("Missing API Key");
 }
+
+const FAV_MOVIE_MONGO_URL = "http:localhost:3000/api/movie";
+const FAV_SHOW_MONGO_URL = "http:localhost:3000/api/show";
 interface Genres {
   id: number;
   name: string;
@@ -64,14 +67,6 @@ const transformTvShoweData = (TvShoweData: any): Movie => {
   };
 };
 
-const baseOptions = {
-  method: "GET",
-  headers: {
-    accept: "application/json",
-    Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
-  },
-};
-
 export const fetchMovies = async (): Promise<Movie[]> => {
   const url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&api_key=${apiKey}`;
   try {
@@ -119,3 +114,47 @@ export const fetchTVShowByID = async (id: string): Promise<Movie> => {
     throw error;
   }
 };
+
+export const GetFavMovies = async (): Promise<Movie[]> => {
+  const url = FAV_MOVIE_MONGO_URL;
+  try {
+    const response = await axios.get(url);
+    const movie = response.data || null;
+    return movie.map(transformMovieData);
+  } catch (error) {
+    console.error("Error getting favorite movie", error);
+    throw error;
+  }
+};
+
+export const GetFavShows = async (): Promise<TVShow[]> => {
+  const url = FAV_SHOW_MONGO_URL;
+  try {
+    const response = await axios.get(url);
+    const show = response.data || null;
+    return show.map(transformMovieData);
+  } catch (error) {
+    console.error("Error getting favorite show", error);
+    throw error;
+  }
+};
+
+export const addFavMovie = async (movie: Movie): Promise<Movie> => {
+  try {
+    const response = await axios.post(FAV_MOVIE_MONGO_URL, movie)
+    return response.data
+  } catch (error) {
+    console.error('Error adding movie to favorits', error)
+    throw error
+  }
+}
+
+export const addFavShow = async (show: TVShow): Promise<TVShow> => {
+  try {
+    const response = await axios.post(FAV_SHOW_MONGO_URL, show)
+    return response.data
+  } catch (error) {
+    console.error('Error adding show to favorits', error)
+    throw error
+  }
+}
