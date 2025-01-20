@@ -2,14 +2,16 @@ import React from "react";
 import axios from "axios";
 
 const apiKey = process.env.EXPO_PUBLIC_TMDB_API_KEY;
+const ip = process.env.EXPO_PUBLIC_IP
 
 if (!apiKey) {
   console.error("API Key is not defined");
   throw new Error("Missing API Key");
 }
 
-const FAV_MOVIE_MONGO_URL = "http:localhost:3000/api/movie";
-const FAV_SHOW_MONGO_URL = "http:localhost:3000/api/show";
+const FAV_MOVIE_MONGO_URL = `http://${ip}:3000/api/movies`;
+const FAV_SHOW_MONGO_URL = `http://${ip}:3000/api/shows`;
+
 interface Genres {
   id: number;
   name: string;
@@ -132,7 +134,7 @@ export const GetFavShows = async (): Promise<TVShow[]> => {
   try {
     const response = await axios.get(url);
     const show = response.data || null;
-    return show.map(transformMovieData);
+    return show.map(transformTvShoweData);
   } catch (error) {
     console.error("Error getting favorite show", error);
     throw error;
@@ -141,7 +143,9 @@ export const GetFavShows = async (): Promise<TVShow[]> => {
 
 export const addFavMovie = async (movie: Movie): Promise<Movie> => {
   try {
+    console.log("sending moivie:", movie);
     const response = await axios.post(FAV_MOVIE_MONGO_URL, movie)
+    console.log("Movie added to favorites:", response.data);
     return response.data
   } catch (error) {
     console.error('Error adding movie to favorits', error)

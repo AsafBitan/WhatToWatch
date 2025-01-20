@@ -45,7 +45,7 @@ const MoviePage = () => {
           <View className="flex flex-row flex-wrap justify-center mb-3">
             <View
               style={{ aspectRatio }}
-              className="w-full aspect-ratio-[16:9] rounded-xl overflow-hidden shadow-lg mb-6"
+              className="w-full rounded-xl overflow-hidden shadow-lg mb-6"
             >
               {movie?.primaryImage ? (
                 <Image

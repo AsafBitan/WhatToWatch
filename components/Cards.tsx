@@ -1,14 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React, { useState, useEffect} from 'react'
-import { Movie, TVShow } from '../app/ApiService';
-
-// interface Movies {
-//     movies: Movie[];
-// }
-
-// interface TVShows {
-//     tvshows: TVShow[];
-// }
+import { addFavMovie, addFavShow, Movie, TVShow } from '../app/ApiService';
+import icons from '@/constants/icons';
 
 interface MovieProps{
     item: Movie;
@@ -20,38 +13,70 @@ interface TVShowProps{
     onPress?: () => void;
 }
 
+const handleMovieLikePress = (movie: Movie) => {
+    addFavMovie(movie);
+}
+const handleShowLikePress = (show: TVShow) => {
+    addFavShow(show);
+}
+
+const handleMovieLaterPress = (movie: Movie) => {
+    addFavMovie(movie);
+}
+
+const handleShowLaterPress = (show: TVShow) => {
+    addFavMovie(show);
+}
 
 export const MovieCards = ({ item, onPress }: MovieProps) => {
     return (
         <View className="flex flex-row flex-wrap justify-center mb-3">
-                <TouchableOpacity
-                    key={item.id}
-                    onPress={onPress}
-                    className="flex flex-col w-60 items-center"
-                >
-                    <View className="w-full h-80 rounded-2xl overflow-hidden shadow-lg relative">
-                        {item.primaryImage ? (
-                        <Image
-                            source={{ uri: item.primaryImage }}
-                            className="size-full rounded-2xl"
-                            resizeMode="contain"
-                        />
-                        ) : (
-                            <View className="size-full bg-gray-300 rounded-2xl" />
-                        )}
-                        <View className="flex flex-row item-center bg-white/90 px-3 py-1.5 rounded-full absolute top-5 right-5">
-                            <Text className="text-xs font-bold text-black">
-                                {item.averageRating.toFixed(1)}
-                            </Text>
-                        </View>
-                    </View>
-                
-                    <View>  
-                        <Text className="text-base font-bold text-black text-center">
-                            {item.title}
+            <TouchableOpacity
+                key={item.id}
+                onPress={onPress}
+                className="flex flex-col w-60 items-center"
+            >
+                <View className="w-full h-80 rounded-2xl overflow-hidden shadow-lg relative">
+                    {item.primaryImage ? (
+                    <Image
+                        source={{ uri: item.primaryImage }}
+                        className="size-full rounded-2xl"
+                        resizeMode="contain"
+                    />
+                    ) : (
+                        <View className="size-full bg-gray-300 rounded-2xl" />
+                    )}
+                    <View className="flex flex-row items-center bg-white/70 px-3 py-1.5 rounded-full absolute top-5 right-5">
+                        <Text className="text-xs font-bold text-black">
+                            {item.averageRating?.toFixed(1)}
                         </Text>
                     </View>
-                </TouchableOpacity>
+                    <TouchableOpacity 
+                        onPress={ () => handleMovieLikePress(item)}
+                        className="flex flex-row items-center px-3 py-1.5 rounded-full absolute top-14 right-5">
+                        <View className='relative w-5 h-5'>
+                            <View className="absolute inset-0.5 bg-white/70 rounded-full" />
+                                <Image source={icons.like} className='w-full h-full ' />
+                            </View>
+                        
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                        onPress={ () => handleMovieLaterPress(item)}
+                        className="flex flex-row items-center px-3 py-1.5 rounded-full absolute top-24 right-5">
+                            <View className='relative w-5 h-5'>
+                                <View className="absolute inset-0.5 bg-white/70 rounded-full" />
+                                <Image source={icons.time} className='size-5' />
+                            </View>
+                    </TouchableOpacity>
+            
+                <View>  
+                    <Text className="text-base font-bold text-black text-center">
+                        {item.title}
+                    </Text>
+                </View>
+                </View>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -78,6 +103,18 @@ export const TVShowCards = ({ item, onPress }: TVShowProps) => {
                             <Text className="text-xs font-bold text-black">
                                 {item.averageRating.toFixed(1)}
                             </Text>
+                        </View>
+                        <View className="flex flex-row items-center px-3 py-1.5 rounded-full absolute top-14 right-5">
+                            <View className='relative w-5 h-5'>
+                                <View className="absolute inset-0.5 bg-white/70 rounded-full" />
+                                <Image source={icons.like} className='w-full h-full ' />
+                            </View>
+                        </View>
+                        <View className="flex flex-row items-center px-3 py-1.5 rounded-full absolute top-24 right-5">
+                            <View className='relative w-5 h-5'>
+                                <View className="absolute inset-0.5 bg-white/70 rounded-full" />
+                                <Image source={icons.time} className='size-5' />
+                            </View>
                         </View>
                     </View>
                 

@@ -18,15 +18,28 @@ const Favorites = () => {
 
   useEffect(() => {
     const fetchFavMovies = async () => {
-      const favMovies = await GetFavMovies();
-      setMovies(favMovies);
+      try{
+        const favMovies = await GetFavMovies();
+        setMovies(favMovies);
+        console.log(favMovies)
+      } catch (error) {
+        console.error("Error fetching favorit movies: ", error);
+      } finally{
+        setLoadingMovie(false)
+      }
     }
     const fetchFavShows = async () => {
-      const favShows = await GetFavShows();
-      setShows(favShows)
+      try{
+        const favShows = await GetFavShows();
+        setShows(favShows)
+      } catch (error) {
+        console.error("Error fetching favorit movies: ", error);
+      } finally{
+        setLoadingMovie(false)
+      }
     }
     fetchFavMovies()
-    fetchFavShows()
+    //fetchFavShows()
   }, []);
 
   return (

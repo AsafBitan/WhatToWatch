@@ -16,6 +16,8 @@ import chartHistogram from "../assets/icons/chart-histogram.png"
 import chartGraph from "../assets/icons/chart-graph.png"
 import dataSheet from "../assets/icons/data-sheet.png"
 import court from "../assets/icons/court.png"
+import like from "../assets/icons/like.png"
+import time from "../assets/icons/time.png"
 
 export default {
   play,
@@ -36,4 +38,6 @@ export default {
   chartGraph,
   dataSheet, 
   court,
+  like,
+  time,
 };

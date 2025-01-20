@@ -14,10 +14,13 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    console.log("Received request:", req.body);  // Add logging
     const newMovie = new Movie(req.body);
-    const savedMovie = await newMoive.save();
+    const savedMovie = await newMovie.save();
+    console.log("Movie saved:", savedMovie);  // Add logging
     res.json(savedMovie);
   } catch (error) {
+    console.error("Error saving movie:", error);  // Add logging
     res.status(400).json({ error: "Failed to add movie" });
   }
 });
