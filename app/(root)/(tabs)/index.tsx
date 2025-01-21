@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Search from "@/components/seatch";
+import Search from "@/components/Search";
 import { MovieCards, TVShowCards } from "@/components/Cards";
 
 import { Movie, TVShow, fetchMovies, fetchTV } from "../../ApiService";

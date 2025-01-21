@@ -16,8 +16,8 @@ const MoviePage = () => {
       if (id) {
         const fetchedMovieById = await fetchMovieByID(id);
         setMovie(fetchedMovieById);
-        if (fetchedMovieById?.primaryImage) {
-          Image.getSize(fetchedMovieById.primaryImage, (width, hight) => {
+        if (fetchedMovieById?.poster_path) {
+          Image.getSize(fetchedMovieById.poster_path, (width, hight) => {
             setAspectRatio(width / hight);
           });
         }
@@ -47,9 +47,9 @@ const MoviePage = () => {
               style={{ aspectRatio }}
               className="w-full rounded-xl overflow-hidden shadow-lg mb-6"
             >
-              {movie?.primaryImage ? (
+              {movie?.poster_path ? (
                 <Image
-                  source={{ uri: movie.primaryImage }}
+                  source={{ uri: movie.poster_path }}
                   className="w-full h-full rounded-2xl"
                   style={{ backgroundColor: "black" }}
                   resizeMode="contain"
@@ -67,17 +67,17 @@ const MoviePage = () => {
               <Text className="text-gray-600 text-lg">
                 Release Date:{" "}
                 <Text className="font-semibold">
-                  {movie?.releaseDate || "N/A"}
+                  {movie?.release_date || "N/A"}
                 </Text>
               </Text>
               <Text className="text-gray-600 text-lg">
                 Rating:{" "}
                 <Text className="font-semibold">
-                  {movie?.averageRating || "N/A"}
+                  {movie?.vote_average || "N/A"}
                 </Text>
               </Text>
               <Text className="text-gray-800">
-                {movie?.description || "No description available."}
+                {movie?.overview || "No description available."}
               </Text>
               <Text className="text-gray-600">
                 Genres:{" "}

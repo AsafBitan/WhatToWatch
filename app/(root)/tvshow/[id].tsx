@@ -16,8 +16,8 @@ const Team = () => {
       if (id) {
         const fetchedTVShowByID = await fetchTVShowByID(id);
         setShow(fetchedTVShowByID);
-        if (fetchedTVShowByID?.primaryImage) {
-          Image.getSize(fetchedTVShowByID.primaryImage, (width, hight) => {
+        if (fetchedTVShowByID?.poster_path) {
+          Image.getSize(fetchedTVShowByID.poster_path, (width, hight) => {
             setAspectRatio(width / hight);
           });
         }
@@ -46,9 +46,9 @@ const Team = () => {
               style={{ aspectRatio }}
               className="w-full aspect-ratio-[16:9] rounded-xl overflow-hidden shadow-lg mb-6"
             >
-              {show?.primaryImage ? (
+              {show?.poster_path ? (
                 <Image
-                  source={{ uri: show.primaryImage }}
+                  source={{ uri: show.poster_path }}
                   className="w-full h-full rounded-2xl"
                   style={{ backgroundColor: "black" }}
                   resizeMode="contain"
@@ -66,17 +66,17 @@ const Team = () => {
               <Text className="text-gray-600 text-lg">
                 Release Date:{" "}
                 <Text className="font-semibold">
-                  {show?.releaseDate || "N/A"}
+                  {show?.release_date || "N/A"}
                 </Text>
               </Text>
               <Text className="text-gray-600 text-lg">
                 Rating:{" "}
                 <Text className="font-semibold">
-                  {show?.averageRating || "N/A"}
+                  {show?.vote_average || "N/A"}
                 </Text>
               </Text>
               <Text className="text-gray-800">
-                {show?.description || "No description available."}
+                {show?.overview || "No description available."}
               </Text>
               <Text className="text-gray-600">
                 Genres:{" "}

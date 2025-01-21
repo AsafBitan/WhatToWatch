@@ -14,6 +14,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    console.log("Received request:", req.body);
     const newShow = new Show(req.body);
     const savedShow = await newShow.save();
     res.json(savedShow);

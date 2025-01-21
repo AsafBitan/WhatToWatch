@@ -21,25 +21,25 @@ export interface Movie {
   id: string;
   title: string;
   type: string;
-  primaryImage: string | null;
-  averageRating: number;
-  releaseDate: string;
+  poster_path: string | null;
+  vote_average: number;
+  release_date: string;
   genres: Genres[];
-  description: string;
+  overview: string;
 }
 
-const transformMovieData = (movieData: any): Movie => {
+export const transformMovieData = (movieData: any): Movie => {
   return {
     id: movieData.id,
     title: movieData.title,
     type: "movie",
-    primaryImage: movieData.poster_path
+    poster_path: movieData.poster_path
       ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
       : null,
-    averageRating: movieData.vote_average,
-    releaseDate: movieData.release_date,
+    vote_average: movieData.vote_average,
+    release_date: movieData.release_date,
     genres: movieData.genres || [],
-    description: movieData.overview,
+    overview: movieData.overview,
   };
 };
 
@@ -47,25 +47,25 @@ export interface TVShow {
   id: string;
   title: string;
   type: string;
-  primaryImage: string | null;
-  averageRating: number;
-  releaseDate: string;
+  poster_path: string | null;
+  vote_average: number;
+  release_date: string;
   genres: Genres[];
-  description: string;
+  overview: string;
 }
 
-const transformTvShoweData = (TvShoweData: any): Movie => {
+export const transformTvShowData = (TvShoweData: any): TVShow => {
   return {
     id: TvShoweData.id,
     title: TvShoweData.name,
     type: "Tv show",
-    primaryImage: TvShoweData.poster_path
+    poster_path: TvShoweData.poster_path
       ? `https://image.tmdb.org/t/p/w500${TvShoweData.poster_path}`
       : null,
-    averageRating: TvShoweData.vote_average,
-    releaseDate: TvShoweData.first_air_date,
+    vote_average: TvShoweData.vote_average,
+    release_date: TvShoweData.release_date,
     genres: TvShoweData.genres || [],
-    description: TvShoweData.overview,
+    overview: TvShoweData.overview,
   };
 };
 
@@ -86,7 +86,7 @@ export const fetchTV = async (): Promise<TVShow[]> => {
   try {
     const response = await axios.get(url);
     const shows = response.data.results || [];
-    return shows.map(transformTvShoweData);
+    return shows.map(transformTvShowData);
   } catch (error) {
     console.error("Error fetching tv shows", error);
     throw error;
@@ -110,7 +110,7 @@ export const fetchTVShowByID = async (id: string): Promise<Movie> => {
   try {
     const response = await axios.get(url);
     const show = response.data || null;
-    return transformTvShoweData(show);
+    return transformTvShowData(show);
   } catch (error) {
     console.error("Error fetching by id ", error);
     throw error;
@@ -122,6 +122,7 @@ export const GetFavMovies = async (): Promise<Movie[]> => {
   try {
     const response = await axios.get(url);
     const movie = response.data || null;
+    console.log("Raw movie response data:", response.data);
     return movie.map(transformMovieData);
   } catch (error) {
     console.error("Error getting favorite movie", error);
@@ -134,7 +135,8 @@ export const GetFavShows = async (): Promise<TVShow[]> => {
   try {
     const response = await axios.get(url);
     const show = response.data || null;
-    return show.map(transformTvShoweData);
+    console.log("Raw show response data:", response.data);
+    return show?.map(transformTvShowData);
   } catch (error) {
     console.error("Error getting favorite show", error);
     throw error;
@@ -155,10 +157,25 @@ export const addFavMovie = async (movie: Movie): Promise<Movie> => {
 
 export const addFavShow = async (show: TVShow): Promise<TVShow> => {
   try {
+    console.log("sending show:", show);
     const response = await axios.post(FAV_SHOW_MONGO_URL, show)
+    console.log("Show added to favorites:", response.data);
     return response.data
   } catch (error) {
     console.error('Error adding show to favorits', error)
     throw error
   }
 }
+
+const ApiService = {
+  fetchMovies,
+  fetchTV,
+  fetchMovieByID,
+  fetchTVShowByID,
+  GetFavMovies,
+  GetFavShows,
+  addFavMovie,
+  addFavShow,
+};
+
+export default ApiService;
