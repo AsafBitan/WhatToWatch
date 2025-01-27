@@ -1,6 +1,13 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React, { useState, useEffect } from "react";
-import { addFavMovie, addFavShow, Movie, TVShow } from "../app/ApiService";
+import {
+  addFavMovie,
+  addFavShow,
+  addToWatchMovie,
+  addToWatchShow,
+  Movie,
+  TVShow,
+} from "../app/ApiService";
 import icons from "@/constants/icons";
 
 interface MovieProps {
@@ -20,9 +27,13 @@ const handleShowLikePress = (show: TVShow) => {
   addFavShow(show);
 };
 
-const handleMovieLaterPress = (movie: Movie) => {};
+const handleMovieToWatchPress = (movie: Movie) => {
+  addToWatchMovie(movie);
+};
 
-const handleShowLaterPress = (show: TVShow) => {};
+const handleShowToWatchPress = (show: TVShow) => {
+  addToWatchShow(show);
+};
 
 export const MovieCards = ({ item, onPress }: MovieProps) => {
   return (
@@ -58,7 +69,7 @@ export const MovieCards = ({ item, onPress }: MovieProps) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => handleMovieLaterPress(item)}
+            onPress={() => handleMovieToWatchPress(item)}
             className="flex flex-row items-center px-3 py-1.5 rounded-full absolute top-24 right-5"
           >
             <View className="relative w-5 h-5">
@@ -97,7 +108,7 @@ export const TVShowCards = ({ item, onPress }: TVShowProps) => {
           )}
           <View className="flex flex-row item-center bg-white/90 px-3 py-1.5 rounded-full absolute top-5 right-5">
             <Text className="text-xs font-bold text-black">
-              {item.vote_average.toFixed(1)}
+              {item.vote_average?.toFixed(1)}
             </Text>
           </View>
           <TouchableOpacity
@@ -111,7 +122,7 @@ export const TVShowCards = ({ item, onPress }: TVShowProps) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => handleShowLaterPress(item)}
+            onPress={() => handleShowToWatchPress(item)}
             className="flex flex-row items-center px-3 py-1.5 rounded-full absolute top-24 right-5"
           >
             <View className="relative w-5 h-5">

@@ -38,6 +38,12 @@ app.use("/api/movies", movieRoutes);
 const showRoutes = require("./routes/shows");
 app.use("/api/shows", showRoutes);
 
+const toWatchMoviesRoutes = require("./routes/toWatchMovies");
+app.use("/api/toWatchMovies", toWatchMoviesRoutes);
+
+const toWatchShowRoutes = require("./routes/toWatchShows");
+app.use("/api/toWatchShows", toWatchShowRoutes);
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => console.log(`Server runing on port ${PORT}`));

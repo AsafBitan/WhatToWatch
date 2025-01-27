@@ -24,6 +24,15 @@ const Home = () => {
   const handleMoviePress = (id: string) => router.push(`/movie/${id}`);
   const handleTVSowPress = (id: string) => router.push(`/tvshow/${id}`);
 
+  const handleNavigateToExplore = (query: string) => {
+    router.push({
+      pathname: "/explore",
+      params: {
+        query,
+      },
+    });
+  };
+
   useEffect(() => {
     const getMovies = async () => {
       try {
@@ -54,7 +63,10 @@ const Home = () => {
       <ScrollView contentContainerStyle={{ paddingBottom: 60 }}>
         <View className="px-5">
           <View className="flex flex-row items-center justify-between mt-5"></View>
-          <Search />
+          <Search
+            onNavigateToExplore={handleNavigateToExplore}
+            autoSearch={false}
+          />
           <View className="my-5">
             <View className="flex flex-row items-center justify-betweeen"></View>
           </View>

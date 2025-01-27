@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 
 const apiKey = process.env.EXPO_PUBLIC_TMDB_API_KEY;
-const ip = process.env.EXPO_PUBLIC_IP
+const ip = process.env.EXPO_PUBLIC_IP;
 
 if (!apiKey) {
   console.error("API Key is not defined");
@@ -11,6 +11,8 @@ if (!apiKey) {
 
 const FAV_MOVIE_MONGO_URL = `http://${ip}:3000/api/movies`;
 const FAV_SHOW_MONGO_URL = `http://${ip}:3000/api/shows`;
+const TO_WATCH_MOVIE_MONGO_URL = `http://${ip}:3000/api/toWatchMovies`;
+const TO_WATCH_SHOW_MONGO_URL = `http://${ip}:3000/api/ToWatchShows`;
 
 interface Genres {
   id: number;
@@ -20,7 +22,7 @@ interface Genres {
 export interface Movie {
   id: string;
   title: string;
-  type: string;
+  media_type: string;
   poster_path: string | null;
   vote_average: number;
   release_date: string;
@@ -32,7 +34,7 @@ export const transformMovieData = (movieData: any): Movie => {
   return {
     id: movieData.id,
     title: movieData.title,
-    type: "movie",
+    media_type: "movie",
     poster_path: movieData.poster_path
       ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
       : null,
@@ -46,7 +48,7 @@ export const transformMovieData = (movieData: any): Movie => {
 export interface TVShow {
   id: string;
   title: string;
-  type: string;
+  media_type: string;
   poster_path: string | null;
   vote_average: number;
   release_date: string;
@@ -58,7 +60,7 @@ export const transformTvShowData = (TvShoweData: any): TVShow => {
   return {
     id: TvShoweData.id,
     title: TvShoweData.name,
-    type: "Tv show",
+    media_type: "tvshow",
     poster_path: TvShoweData.poster_path
       ? `https://image.tmdb.org/t/p/w500${TvShoweData.poster_path}`
       : null,
@@ -146,26 +148,92 @@ export const GetFavShows = async (): Promise<TVShow[]> => {
 export const addFavMovie = async (movie: Movie): Promise<Movie> => {
   try {
     console.log("sending moivie:", movie);
-    const response = await axios.post(FAV_MOVIE_MONGO_URL, movie)
+    const response = await axios.post(FAV_MOVIE_MONGO_URL, movie);
     console.log("Movie added to favorites:", response.data);
-    return response.data
+    return response.data;
   } catch (error) {
-    console.error('Error adding movie to favorits', error)
-    throw error
+    console.error("Error adding movie to favorits", error);
+    throw error;
   }
-}
+};
 
 export const addFavShow = async (show: TVShow): Promise<TVShow> => {
   try {
     console.log("sending show:", show);
-    const response = await axios.post(FAV_SHOW_MONGO_URL, show)
+    const response = await axios.post(FAV_SHOW_MONGO_URL, show);
     console.log("Show added to favorites:", response.data);
-    return response.data
+    return response.data;
   } catch (error) {
-    console.error('Error adding show to favorits', error)
-    throw error
+    console.error("Error adding show to favorits", error);
+    throw error;
   }
-}
+};
+
+export const GetToWatchMovies = async (): Promise<Movie[]> => {
+  const url = TO_WATCH_MOVIE_MONGO_URL;
+  try {
+    const response = await axios.get(url);
+    const movie = response.data || null;
+    console.log("Raw movie response data:", response.data);
+    return movie.map(transformMovieData);
+  } catch (error) {
+    console.error("Error getting want to watch movie", error);
+    throw error;
+  }
+};
+
+export const GetToWatchShows = async (): Promise<TVShow[]> => {
+  const url = TO_WATCH_SHOW_MONGO_URL;
+  try {
+    const response = await axios.get(url);
+    const show = response.data || null;
+    console.log("Raw show response data:", response.data);
+    return show?.map(transformTvShowData);
+  } catch (error) {
+    console.error("Error getting to want to watch show", error);
+    throw error;
+  }
+};
+
+export const addToWatchMovie = async (movie: Movie): Promise<Movie> => {
+  const url = TO_WATCH_MOVIE_MONGO_URL;
+  try {
+    console.log("sending moivie:", movie);
+    const response = await axios.post(url, movie);
+    console.log("Movie added to want to watch:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding movie to want to watch", error);
+    throw error;
+  }
+};
+
+export const addToWatchShow = async (show: TVShow): Promise<TVShow> => {
+  const url = TO_WATCH_SHOW_MONGO_URL;
+  try {
+    console.log("sending show:", show);
+    const response = await axios.post(url, show);
+    console.log("Show added to want to watch:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding show to favorits", error);
+    throw error;
+  }
+};
+
+export const findMulti = async (query: string): Promise<(Movie | TVShow)[]> => {
+  const url = `https://api.themoviedb.org/3/search/multi?query=${query}&include_adult=false&language=en-US&page=1&api_key=${apiKey}`;
+  try {
+    console.log("sending search for: ", query);
+    const response = await axios.get(url);
+    const searchResults = response.data.results || [];
+    console.log('Response is: ', searchResults)
+    return searchResults.map((item: any) => item.media_type == "movie" ? transformMovieData(item) : transformTvShowData(item))
+  } catch (error) {
+    console.error(`Error searching for the query: ${query}`, error);
+    throw error;
+  }
+};
 
 const ApiService = {
   fetchMovies,
@@ -176,6 +244,10 @@ const ApiService = {
   GetFavShows,
   addFavMovie,
   addFavShow,
+  GetToWatchMovies,
+  GetToWatchShows,
+  addToWatchMovie,
+  addToWatchShow,
 };
 
 export default ApiService;
