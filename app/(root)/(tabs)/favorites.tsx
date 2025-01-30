@@ -77,6 +77,8 @@ const Favorites = () => {
                 <MovieCards
                   item={item}
                   onPress={() => handleMoviePress(item.id)}
+                  isFavorite={true}
+                  isWatchList={movies.some(movie => movie.id === item.id)}
                 />
               )}
               horizontal

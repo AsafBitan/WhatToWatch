@@ -12,14 +12,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Search from "@/components/Search";
 import { MovieCards, TVShowCards } from "@/components/Cards";
 
-import { Movie, TVShow, fetchMovies, fetchTV } from "../../ApiService";
+import { GetFavMovies, GetToWatchMovies, Movie, TVShow, fetchMovies, fetchTV } from "../../ApiService";
+import useMovieStore from "@/stores/useMovieStore";
+import useShowStore from "@/stores/useShowStore";
 
 const Home = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loadingMovie, setLoadingMovie] = useState(true);
-
-  const [tvshows, setTvshows] = useState<TVShow[]>([]);
-  const [loadingShow, setLoadingShow] = useState(true);
+  const { movies, favMovies, toWatchMovies, fetchMovies, moviesLoading, favMoviesLoading, toWatchLoading  } = useMovieStore();
+  const { shows, favShows, toWatchShows, fetchShows, ShowsLoading, favShowsLoading, toWatchShowsLoading } = useShowStore();
 
   const handleMoviePress = (id: string) => router.push(`/movie/${id}`);
   const handleTVSowPress = (id: string) => router.push(`/tvshow/${id}`);
@@ -34,28 +33,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const getMovies = async () => {
-      try {
-        const fetchedMovies = await fetchMovies();
-        setMovies(fetchedMovies);
-      } catch (error) {
-        console.error("Error fetching movies: ", error);
-      } finally {
-        setLoadingMovie(false);
-      }
-    };
-    const getTvShows = async () => {
-      try {
-        const fetchedTvshows = await fetchTV();
-        setTvshows(fetchedTvshows);
-      } catch (error) {
-        console.error("Error fetching movies: ", error);
-      } finally {
-        setLoadingShow(false);
-      }
-    };
-    getMovies();
-    getTvShows();
+    fetchMovies();
+    fetchShows;
   }, []);
 
   return (
@@ -83,7 +62,7 @@ const Home = () => {
             </TouchableOpacity>
           </View>
 
-          {loadingMovie ? (
+          {moviesLoading ? (
             <ActivityIndicator size="large" color="#000" />
           ) : (
             <FlatList
@@ -93,6 +72,8 @@ const Home = () => {
                 <MovieCards
                   item={item}
                   onPress={() => handleMoviePress(item.id)}
+                  isFavorite={favMovies.some((movie) => movie.id === item.id)}
+                  isWatchList={toWatchMovies.some((movie) => movie.id === item.id)}
                 />
               )}
               horizontal
@@ -112,11 +93,11 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          {loadingShow ? (
+          {ShowsLoading ? (
             <ActivityIndicator size="large" color="#000" />
           ) : (
             <FlatList
-              data={tvshows}
+              data={shows}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <TVShowCards

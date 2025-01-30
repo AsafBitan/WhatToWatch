@@ -13,6 +13,8 @@ import icons from "@/constants/icons";
 interface MovieProps {
   item: Movie;
   onPress?: () => void;
+  isFavorite: boolean;
+  isWatchList: boolean;
 }
 
 interface TVShowProps {
@@ -35,7 +37,7 @@ const handleShowToWatchPress = (show: TVShow) => {
   addToWatchShow(show);
 };
 
-export const MovieCards = ({ item, onPress }: MovieProps) => {
+export const MovieCards = ({ item, onPress, isFavorite, isWatchList }: MovieProps) => {
   return (
     <View className="flex flex-row flex-wrap justify-center mb-3">
       <TouchableOpacity
@@ -60,22 +62,16 @@ export const MovieCards = ({ item, onPress }: MovieProps) => {
           </View>
           <TouchableOpacity
             onPress={() => handleMovieLikePress(item)}
-            className="flex flex-row items-center px-3 py-1.5 rounded-full absolute top-14 right-5"
+            className="flex flex-row items-center bg-white/70 rounded-full px-1 py-1 absolute top-14 right-5 "
           >
-            <View className="relative w-5 h-5">
-              <View className="absolute inset-0.5 bg-white/70 rounded-full" />
-              <Image source={icons.like} className="w-full h-full " />
-            </View>
+            <Image source={icons.like} style={{ width: 20, height: 20, tintColor: isFavorite ? "red" : "black"}} />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => handleMovieToWatchPress(item)}
-            className="flex flex-row items-center px-3 py-1.5 rounded-full absolute top-24 right-5"
+            className="flex flex-row items-center bg-white/70 rounded-full px-1 py-1 absolute top-24 right-5"
           >
-            <View className="relative w-5 h-5">
-              <View className="absolute inset-0.5 bg-white/70 rounded-full" />
-              <Image source={icons.time} className="size-5" />
-            </View>
+            <Image source={icons.time} style={{ width: 20, height: 20, tintColor: isWatchList ? "red" : "black" }} />
           </TouchableOpacity>
         </View>
         <View>
@@ -106,29 +102,27 @@ export const TVShowCards = ({ item, onPress }: TVShowProps) => {
           ) : (
             <View className="size-full bg-gray-300 rounded-2xl" />
           )}
-          <View className="flex flex-row item-center bg-white/90 px-3 py-1.5 rounded-full absolute top-5 right-5">
+          <View className="flex flex-row item-center bg-white/70 px-3 py-1.5 rounded-full absolute top-5 right-5">
             <Text className="text-xs font-bold text-black">
               {item.vote_average?.toFixed(1)}
             </Text>
           </View>
+
           <TouchableOpacity
             onPress={() => handleShowLikePress(item)}
-            className="flex flex-row items-center px-3 py-1.5 rounded-full absolute top-14 right-5"
+            className="flex flex-row items-center bg-white/70 rounded-full px-1 py-1 absolute top-14 right-5 "
           >
-            <View className="relative w-5 h-5">
-              <View className="absolute inset-0.5 bg-white/70 rounded-full" />
-              <Image source={icons.like} className="w-full h-full " />
-            </View>
+            <Image
+              source={icons.like}
+              style={{ width: 20, height: 20, tintColor: "red" }}
+            />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => handleShowToWatchPress(item)}
-            className="flex flex-row items-center px-3 py-1.5 rounded-full absolute top-24 right-5"
+            className="flex flex-row items-center bg-white/70 rounded-full px-1 py-1 absolute top-24 right-5"
           >
-            <View className="relative w-5 h-5">
-              <View className="absolute inset-0.5 bg-white/70 rounded-full" />
-              <Image source={icons.time} className="size-5" />
-            </View>
+            <Image source={icons.time} style={{ width: 20, height: 20, tintColor: "red" }} />
           </TouchableOpacity>
         </View>
         <View>
