@@ -12,13 +12,36 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Search from "@/components/Search";
 import { MovieCards, TVShowCards } from "@/components/Cards";
 
-import { GetFavMovies, GetToWatchMovies, Movie, TVShow, fetchMovies, fetchTV } from "../../ApiService";
+import {
+  GetFavMovies,
+  GetToWatchMovies,
+  Movie,
+  TVShow,
+  fetchMovies,
+  fetchTV,
+} from "../../ApiService";
 import useMovieStore from "@/stores/useMovieStore";
 import useShowStore from "@/stores/useShowStore";
 
 const Home = () => {
-  const { movies, favMovies, toWatchMovies, fetchMovies, moviesLoading, favMoviesLoading, toWatchLoading  } = useMovieStore();
-  const { shows, favShows, toWatchShows, fetchShows, ShowsLoading, favShowsLoading, toWatchShowsLoading } = useShowStore();
+  const {
+    movies,
+    favMovies,
+    toWatchMovies,
+    fetchMovies,
+    moviesLoading,
+    favMoviesLoading,
+    toWatchLoading,
+  } = useMovieStore();
+  const {
+    shows,
+    favShows,
+    toWatchShows,
+    fetchShows,
+    ShowsLoading,
+    favShowsLoading,
+    toWatchShowsLoading,
+  } = useShowStore();
 
   const handleMoviePress = (id: string) => router.push(`/movie/${id}`);
   const handleTVSowPress = (id: string) => router.push(`/tvshow/${id}`);
@@ -73,7 +96,9 @@ const Home = () => {
                   item={item}
                   onPress={() => handleMoviePress(item.id)}
                   isFavorite={favMovies.some((movie) => movie.id === item.id)}
-                  isWatchList={toWatchMovies.some((movie) => movie.id === item.id)}
+                  isWatchList={toWatchMovies.some(
+                    (movie) => movie.id === item.id
+                  )}
                 />
               )}
               horizontal
