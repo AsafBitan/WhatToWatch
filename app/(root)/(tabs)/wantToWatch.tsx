@@ -17,45 +17,24 @@ import {
 import { MovieCards, TVShowCards } from "@/components/Cards";
 import { router } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
+import useMovieStore from "@/stores/useMovieStore";
+import useShowStore from "@/stores/useShowStore";
 
 const wantToWatch = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [shows, setShows] = useState<TVShow[]>([]);
+  const {
+    favMovies,
+    toWatchMovies,
+    toWatchLoading,
+  } = useMovieStore();
 
-  const [loadingMovie, setLoadingMovie] = useState(true);
-  const [loadingShow, setLoadingShow] = useState(true);
+  const {
+    favShows,
+    toWatchShows,
+    toWatchShowsLoading,
+  } = useShowStore();
 
   const handleMoviePress = (id: string) => router.push(`/movie/${id}`);
   const handleTVSowPress = (id: string) => router.push(`/tvshow/${id}`);
-
-  const fetchToWatchMovies = async () => {
-    try {
-      const toWatchMovies = await GetToWatchMovies();
-      setMovies(toWatchMovies);
-    } catch (error) {
-      console.error("Error fetching to watch movies: ", error);
-    } finally {
-      setLoadingMovie(false);
-    }
-  };
-
-  const fetchToWatchShows = async () => {
-    try {
-      const toWatchShows = await GetToWatchShows();
-      setShows(toWatchShows);
-    } catch (error) {
-      console.error("Error fetching to watch shows: ", error);
-    } finally {
-      setLoadingShow(false);
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchToWatchMovies();
-      fetchToWatchShows();
-    }, [])
-  );
 
   return (
     <SafeAreaView className="h-full bg-white">
@@ -72,16 +51,18 @@ const wantToWatch = () => {
             </TouchableOpacity>
           </View>
 
-          {loadingMovie ? (
+          {toWatchLoading ? (
             <ActivityIndicator size="large" color="#000" />
           ) : (
             <FlatList
-              data={movies}
+              data={toWatchMovies}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <MovieCards
                   item={item}
                   onPress={() => handleMoviePress(item.id)}
+                  isFavorite={favMovies.some((movie) => movie.id === item.id)}
+                  isWatchList={true}
                 />
               )}
               horizontal
@@ -101,16 +82,18 @@ const wantToWatch = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          {loadingShow ? (
+          {toWatchShowsLoading ? (
             <ActivityIndicator size="large" color="#000" />
           ) : (
             <FlatList
-              data={shows}
+              data={toWatchShows}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <TVShowCards
                   item={item}
                   onPress={() => handleTVSowPress(item.id)}
+                  isFavorite={favShows.some((show) => show.id === item.id)}
+                  isWatchList={true}
                 />
               )}
               horizontal

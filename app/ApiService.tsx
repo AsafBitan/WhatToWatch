@@ -12,7 +12,7 @@ if (!apiKey) {
 const FAV_MOVIE_MONGO_URL = `http://${ip}:3000/api/movies`;
 const FAV_SHOW_MONGO_URL = `http://${ip}:3000/api/shows`;
 const TO_WATCH_MOVIE_MONGO_URL = `http://${ip}:3000/api/toWatchMovies`;
-const TO_WATCH_SHOW_MONGO_URL = `http://${ip}:3000/api/ToWatchShows`;
+const TO_WATCH_SHOW_MONGO_URL = `http://${ip}:3000/api/toWatchShows`;
 
 interface Genres {
   id: number;
@@ -157,6 +157,18 @@ export const addFavMovie = async (movie: Movie): Promise<Movie> => {
   }
 };
 
+export const removeFavMovie = async (movie: Movie): Promise<Movie> => {
+  try {
+    console.log("Removing movie with ID:", movie.id);
+    const response = await axios.delete(`${FAV_MOVIE_MONGO_URL}/${movie.id}`);
+    console.log("Movie deleted from favorites:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting movie from favorits", error);
+    throw error;
+  }
+};
+
 export const addFavShow = async (show: TVShow): Promise<TVShow> => {
   try {
     console.log("sending show:", show);
@@ -165,6 +177,18 @@ export const addFavShow = async (show: TVShow): Promise<TVShow> => {
     return response.data;
   } catch (error) {
     console.error("Error adding show to favorits", error);
+    throw error;
+  }
+};
+
+export const removeFavShow = async (show: TVShow): Promise<TVShow> => {
+  try {
+    console.log("deleting show:", show);
+    const response = await axios.delete(`${FAV_SHOW_MONGO_URL}/${show.id}`);
+    console.log("Show deleted from favorites:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting show from favorits", error);
     throw error;
   }
 };
@@ -208,6 +232,18 @@ export const addToWatchMovie = async (movie: Movie): Promise<Movie> => {
   }
 };
 
+export const removeToWatchMovie = async (movie: Movie): Promise<Movie> => {
+  try {
+    console.log("Removing movie with ID:", movie.id);
+    const response = await axios.delete(`${TO_WATCH_MOVIE_MONGO_URL}/${movie.id}`);
+    console.log("Movie deleted from favorites:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting movie from want to watch", error);
+    throw error;
+  }
+};
+
 export const addToWatchShow = async (show: TVShow): Promise<TVShow> => {
   const url = TO_WATCH_SHOW_MONGO_URL;
   try {
@@ -216,7 +252,20 @@ export const addToWatchShow = async (show: TVShow): Promise<TVShow> => {
     console.log("Show added to want to watch:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error adding show to favorits", error);
+    console.error("Error adding show to want to watch", error);
+    throw error;
+  }
+};
+
+export const removeToWatchShow = async (show: TVShow): Promise<TVShow> => {
+  const url = TO_WATCH_SHOW_MONGO_URL;
+  try {
+    console.log("removing show:", show);
+    const response = await axios.delete(`${url}/${show.id}`);
+    console.log("Show deleted from want to watch:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting show from want to watch", error);
     throw error;
   }
 };

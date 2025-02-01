@@ -12,46 +12,25 @@ import { GetFavMovies, GetFavShows, Movie, TVShow } from "@/app/ApiService";
 import { MovieCards, TVShowCards } from "@/components/Cards";
 import { router } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
+import useMovieStore from "@/stores/useMovieStore"
+import useShowStore from "@/stores/useShowStore";
 
 const Favorites = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [shows, setShows] = useState<TVShow[]>([]);
+  const {
+    favMovies,
+    toWatchMovies,
+    favMoviesLoading,
+  } = useMovieStore();
 
-  const [loadingMovie, setLoadingMovie] = useState(true);
-  const [loadingShow, setLoadingShow] = useState(true);
+  const {
+    favShows,
+    toWatchShows,
+    favShowsLoading,
+  } = useShowStore();
 
   const handleMoviePress = (id: string) => router.push(`/movie/${id}`);
   const handleTVSowPress = (id: string) => router.push(`/tvshow/${id}`);
 
-  const fetchFavMovies = async () => {
-    try {
-      const favMovies = await GetFavMovies();
-      setMovies(favMovies);
-      console.log(favMovies);
-    } catch (error) {
-      console.error("Error fetching favorit movies: ", error);
-    } finally {
-      setLoadingMovie(false);
-    }
-  };
-
-  const fetchFavShows = async () => {
-    try {
-      const favShows = await GetFavShows();
-      setShows(favShows);
-    } catch (error) {
-      console.error("Error fetching favorit shows: ", error);
-    } finally {
-      setLoadingShow(false);
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchFavMovies();
-      fetchFavShows();
-    }, [])
-  );
   return (
     <SafeAreaView className="h-full bg-white">
       <ScrollView contentContainerStyle={{ paddingBottom: 60 }}>
@@ -67,18 +46,20 @@ const Favorites = () => {
             </TouchableOpacity>
           </View>
 
-          {loadingMovie ? (
+          {favMoviesLoading ? (
             <ActivityIndicator size="large" color="#000" />
           ) : (
             <FlatList
-              data={movies}
+              data={favMovies}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <MovieCards
                   item={item}
                   onPress={() => handleMoviePress(item.id)}
                   isFavorite={true}
-                  isWatchList={movies.some(movie => movie.id === item.id)}
+                  isWatchList={toWatchMovies.some(
+                    (movie) => movie.id === item.id
+                  )}
                 />
               )}
               horizontal
@@ -98,16 +79,20 @@ const Favorites = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          {loadingShow ? (
+          {favShowsLoading ? (
             <ActivityIndicator size="large" color="#000" />
           ) : (
             <FlatList
-              data={shows}
+              data={favShows}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <TVShowCards
                   item={item}
                   onPress={() => handleTVSowPress(item.id)}
+                  isFavorite={true}
+                  isWatchList={toWatchShows.some(
+                    (show) => show.id === item.id
+                  )}
                 />
               )}
               horizontal

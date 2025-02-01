@@ -23,4 +23,20 @@ router.post("/", async (req, res) => {
   }
 });
 
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("Received delete request for ID:", id);
+    const deletedShow = await Show.findOneAndDelete({ id });
+
+    if (!deletedShow){
+      return res.status(404).json({ message: 'Show not found' })
+    }
+    res.status(200).json({ message: 'Show deleted successfully', deletedShow })
+  } catch (error){
+    res.status(500).json({ message: 'Error deleteing show', error})
+  }
+})
+
 module.exports = router;

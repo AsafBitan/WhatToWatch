@@ -8,8 +8,9 @@ interface MovieStoreState {
     moviesLoading: boolean;
     favMoviesLoading: boolean;
     toWatchLoading: boolean;
-    fetchMovies: () => Promise<void>;
-    toggleFavorite: (movie: Movie) => void;
+    getMovies: () => Promise<void>;
+    toggleMovieFavorite: (movie: Movie) => void;
+    toggleMovieWatchlist: (movie: Movie) => void;
 }
 
 const useMovieStore = create<MovieStoreState>((set) => ({
@@ -20,7 +21,7 @@ const useMovieStore = create<MovieStoreState>((set) => ({
     favMoviesLoading: true,
     toWatchLoading: true,
 
-    fetchMovies: async () => {
+    getMovies: async () => {
         try {
             const fetchedMovies = await fetchMovies();
             const fetchedFavMovies = await GetFavMovies();
@@ -41,14 +42,14 @@ const useMovieStore = create<MovieStoreState>((set) => ({
         }
     },
 
-    toggleFavorite: (movie: Movie) => set((state) => {
+    toggleMovieFavorite: (movie: Movie) => set((state) => {
         const isFavorite = state.favMovies.some((m) => m.id === movie.id);
         const updatedFavMovies = isFavorite ? state.favMovies.filter((m) => m.id !== movie.id) : [...state.favMovies, movie];
 
         return { favMovies: updatedFavMovies };
     }),
 
-    toggleWatchlist: (movie: Movie) => set((state) => {
+    toggleMovieWatchlist: (movie: Movie) => set((state) => {
         const isInWatchlist = state.toWatchMovies.some((m) => m.id === movie.id);
         const updatedToWatchMovies = isInWatchlist
           ? state.toWatchMovies.filter((m) => m.id !== movie.id)

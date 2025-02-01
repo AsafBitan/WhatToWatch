@@ -1,6 +1,10 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
+  removeFavMovie,
+  removeToWatchMovie,
+  removeFavShow,
+  removeToWatchShow,
   addFavMovie,
   addFavShow,
   addToWatchMovie,
@@ -8,7 +12,10 @@ import {
   Movie,
   TVShow,
 } from "../app/ApiService";
+
 import icons from "@/constants/icons";
+import useMovieStore from "@/stores/useMovieStore";
+import useShowStore from "@/stores/useShowStore";
 
 interface MovieProps {
   item: Movie;
@@ -20,24 +27,54 @@ interface MovieProps {
 interface TVShowProps {
   item: TVShow;
   onPress?: () => void;
+  isFavorite: boolean;
+  isWatchList: boolean;
 }
 
-const handleMovieLikePress = (movie: Movie) => {
-  addFavMovie(movie);
-};
-const handleShowLikePress = (show: TVShow) => {
-  addFavShow(show);
+
+
+const handleMovieLikePress = (movie: Movie, isFavorite: boolean) => {
+  if (isFavorite){
+    removeFavMovie(movie);
+  } else{
+    addFavMovie(movie);
+  }
+  console.log("is favorite: ",isFavorite)
 };
 
-const handleMovieToWatchPress = (movie: Movie) => {
-  addToWatchMovie(movie);
+const handleShowLikePress = (show: TVShow, isFavorite: boolean) => {
+  console.log("isFavorite: ", isFavorite);
+  if (isFavorite){
+    removeFavShow(show)
+  } else{
+    addFavShow(show);
+  }
+  console.log("is favorite: ",isFavorite)
 };
 
-const handleShowToWatchPress = (show: TVShow) => {
-  addToWatchShow(show);
+const handleMovieToWatchPress = (movie: Movie, isInWatchlist: boolean) => {
+  if (isInWatchlist){
+    removeToWatchMovie(movie)
+  } else {
+    addToWatchMovie(movie);
+  }
+};
+
+const handleShowToWatchPress = (show: TVShow, isInWatchlist: boolean) => {
+  if (isInWatchlist){
+    removeToWatchShow(show)
+  }else{
+    addToWatchShow(show);
+  }
 };
 
 export const MovieCards = ({ item, onPress, isFavorite, isWatchList }: MovieProps) => {
+  
+  const {
+    toggleMovieFavorite,
+    toggleMovieWatchlist,
+  } = useMovieStore();
+
   return (
     <View className="flex flex-row flex-wrap justify-center mb-3">
       <TouchableOpacity
@@ -61,14 +98,14 @@ export const MovieCards = ({ item, onPress, isFavorite, isWatchList }: MovieProp
             </Text>
           </View>
           <TouchableOpacity
-            onPress={() => handleMovieLikePress(item)}
+            onPress={() => { handleMovieLikePress(item, isFavorite); toggleMovieFavorite(item); }}
             className="flex flex-row items-center bg-white/70 rounded-full px-1 py-1 absolute top-14 right-5 "
           >
             <Image source={icons.like} style={{ width: 20, height: 20, tintColor: isFavorite ? "red" : "black"}} />
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => handleMovieToWatchPress(item)}
+            onPress={() => {handleMovieToWatchPress(item, isWatchList); toggleMovieWatchlist(item)}}
             className="flex flex-row items-center bg-white/70 rounded-full px-1 py-1 absolute top-24 right-5"
           >
             <Image source={icons.time} style={{ width: 20, height: 20, tintColor: isWatchList ? "red" : "black" }} />
@@ -84,7 +121,13 @@ export const MovieCards = ({ item, onPress, isFavorite, isWatchList }: MovieProp
   );
 };
 
-export const TVShowCards = ({ item, onPress }: TVShowProps) => {
+export const TVShowCards = ({ item, onPress, isFavorite, isWatchList }: TVShowProps) => {
+
+  const {
+    toggleShowFavorite,
+    toggleShowWatchlist,
+  } = useShowStore();
+
   return (
     <View className="flex flex-row flex-wrap justify-center mt-3">
       <TouchableOpacity
@@ -109,20 +152,20 @@ export const TVShowCards = ({ item, onPress }: TVShowProps) => {
           </View>
 
           <TouchableOpacity
-            onPress={() => handleShowLikePress(item)}
+            onPress={() => {handleShowLikePress(item, isFavorite); toggleShowFavorite(item)}}
             className="flex flex-row items-center bg-white/70 rounded-full px-1 py-1 absolute top-14 right-5 "
           >
             <Image
               source={icons.like}
-              style={{ width: 20, height: 20, tintColor: "red" }}
+              style={{ width: 20, height: 20, tintColor: isFavorite ? "red" : "black"}}
             />
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => handleShowToWatchPress(item)}
+            onPress={() => {handleShowToWatchPress(item, isWatchList); toggleShowWatchlist(item)}}
             className="flex flex-row items-center bg-white/70 rounded-full px-1 py-1 absolute top-24 right-5"
           >
-            <Image source={icons.time} style={{ width: 20, height: 20, tintColor: "red" }} />
+            <Image source={icons.time} style={{ width: 20, height: 20, tintColor: isWatchList ? "red" : "black" }} />
           </TouchableOpacity>
         </View>
         <View>

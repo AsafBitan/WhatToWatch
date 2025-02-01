@@ -8,7 +8,7 @@ const GenresSchema = new mongoose.Schema({
 const MovieSchema = new mongoose.Schema({
   id: { type: String, required: true },
   title: { type: String, required: true },
-  type: { type: String, required: true },
+  media_type: { type: String, required: true },
   poster_path: { type: String },
   vote_average: { type: Number },
   release_date: { type: String },

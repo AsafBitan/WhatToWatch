@@ -8,8 +8,9 @@ interface ShowStoreState {
     ShowsLoading: boolean;
     favShowsLoading: boolean;
     toWatchShowsLoading: boolean;
-    fetchShows: () => Promise<void>;
-    toggleFavorite: (show: TVShow) => void;
+    getShows: () => Promise<void>;
+    toggleShowFavorite: (show: TVShow) => void;
+    toggleShowWatchlist: (show: TVShow) => void;
 }
 
 const useShowStore = create<ShowStoreState>((set) => ({
@@ -20,7 +21,7 @@ const useShowStore = create<ShowStoreState>((set) => ({
     favShowsLoading: true,
     toWatchShowsLoading: true,
 
-    fetchShows: async () => {
+    getShows: async () => {
         try {
             const fetchedShows = await fetchTV();
             const fetchedFavShows = await GetFavShows();
@@ -41,17 +42,17 @@ const useShowStore = create<ShowStoreState>((set) => ({
         }
     },
 
-    toggleFavorite: (shows: TVShow) => set((state) => {
+    toggleShowFavorite: (shows: TVShow) => set((state) => {
         const isFavorite = state.favShows.some((s) => s.id === shows.id);
         const updatedFavShows = isFavorite ? state.favShows.filter((s) => s.id !== shows.id) : [...state.favShows, shows];
 
         return { favShows: updatedFavShows };
     }),
 
-    toggleWatchlist: (shows: TVShow) => set((state) => {
-        const isInWatchlist = state.toWatchShows.some((m) => m.id === shows.id);
+    toggleShowWatchlist: (shows: TVShow) => set((state) => {
+        const isInWatchlist = state.toWatchShows.some((s) => s.id === shows.id);
         const updatedToWatchShows = isInWatchlist
-          ? state.toWatchShows.filter((m) => m.id !== shows.id)
+          ? state.toWatchShows.filter((s) => s.id !== shows.id)
           : [...state.toWatchShows, shows];
     
         return { toWatchShows: updatedToWatchShows };
